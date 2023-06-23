@@ -8,3 +8,7 @@ data "cloudinit_config" "ansbile" {
     filename = "ansible-conf.yaml"
   }
 }
+
+data "template_file" "ansible" {
+  template = file("./cloud-init/ansible-conf.yaml")
+}
