@@ -1,7 +1,7 @@
 variable "project_id" {
   description = "The name of the project."
   type        = string
-  default     = "playground-s-11-62dc7a6f"
+  default     = "playground-s-11-52af3448"
 }
 variable "region" {
   description = "The location of the region."

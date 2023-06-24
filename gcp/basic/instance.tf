@@ -21,14 +21,7 @@ resource "google_compute_instance" "ansible" {
   }
 
   metadata = {
-    startup-script = <<-EOF
-      sudo apt update
-      sudo apt upgrade -y
-      sudo apt install software-properties-common -y
-      sudo add-apt-repository --yes --update ppa:ansible/ansible
-      sudo apt install ansible
-    EOF
+    startup-script = "#!/bin/bash\nsudo apt update\nsudo apt upgrade -y\nsudo apt install software-properties-common -y\nsudo add-apt-repository --yes --update ppa:ansible/ansible\nsudo apt install ansible -y\nsudo apt install neofetch -y\nsudo apt install linuxlogo -y"
   }
 
-  #metadata_startup_script = "echo hi > /test.txt"
 }
