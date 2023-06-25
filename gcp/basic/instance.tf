@@ -21,7 +21,40 @@ resource "google_compute_instance" "ansible" {
   }
 
   metadata = {
-    startup-script = "#!/bin/bash\nsudo apt update\nsudo apt upgrade -y\nsudo apt install software-properties-common -y\nsudo add-apt-repository --yes --update ppa:ansible/ansible\nsudo apt install ansible -y\nsudo apt install neofetch -y\nsudo apt install linuxlogo -y"
+    startup-script = "#!/bin/bash\necho \"start update\" > /tmp/step\nsudo apt update\nsudo apt upgrade -y\necho \"done update\" >> /tmp/step\necho \"start install ansible\" >> /tmp/step\nsudo apt install software-properties-common -y\nsudo add-apt-repository --yes --update ppa:ansible/ansible\necho \"done install ansible\" >> /tmp/step\necho \"start change motd\" >> /tmp/step\nsudo apt install ansible neofetch -y\nsudo neofetch > /etc/motd\necho \"done change motd\" >> /tmp/step\necho \"start code-server\" >> /tmp/step\ncurl -fsSL https://code-server.dev/install.sh | sh\necho \"done code-server\" >> /tmp/step\n"
   }
 
+}
+
+resource "google_compute_instance" "my_instance" {
+  name         = "my-instance"
+  machine_type = "n1-standard-1"
+  zone         = var.zone
+
+  boot_disk {
+    initialize_params {
+      image = "projects/ubuntu-os-cloud/global/images/ubuntu-2204-jammy-v20230616"
+      labels = {
+        role = "aaa"
+      }
+    }
+  }
+
+  network_interface {
+    network = "default"
+    access_config {
+    }
+  }
+
+  metadata_startup_script = <<-EOT
+    #!/bin/bash
+    sudo apt update
+    sudo apt upgrade -y
+    sudo apt install software-properties-common -y
+    sudo add-apt-repository --yes --update ppa:ansible/ansible
+    sudo apt install ansible neofetch -y
+    sudo neofetch > /etc/motd
+    curl -fsSL https://code-server.dev/install.sh | sh
+    sudo systemctl enable --now code-server@$USER
+  EOT
 }
